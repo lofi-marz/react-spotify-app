@@ -1,15 +1,10 @@
+import { Swipe } from 'components/sections/swipe/Swipe';
 import type { NextPage } from 'next';
 
 import React from 'react';
 
-
 const Home: NextPage = () => {
-
-    return (
-        <React.Fragment key="home">
-            <h1>Hi</h1>
-        </React.Fragment>
-    );
+    return <Swipe></Swipe>;
 };
 
 export default Home;

@@ -4,10 +4,39 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    input,
+    textarea,
+    button,
+    select,
+    a {
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
+}
 
 @layer utilities {
     .text-gradient{
         @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent !important
+    }
+}
+
+@layer components {
+    .swipe-container {
+        display: grid;
+        grid-template-rows: [album] 100vw [controls] 1fr;
+        grid-template-columns: 1fr;
+    }
+
+    .swipe-album {
+
+    }
+
+    .swipe-controls {
+
+    }
+
+    .card {
+        @apply rounded-lg;
     }
 }
 

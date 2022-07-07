@@ -1,10 +1,25 @@
+<h1 align="center">
+  Spotify Swipe
+</h1>
+Spotify recommendations
+
+Access the live version at: [lofi-marz.github.io](http://lofi-marz.github.io)
+
+## Built With
+ - [Next.js](https://nextjs.org/)
+ - [TailwindCSS](https://tailwindcss.com/)
+ - [Framer  Motion](https://www.framer.com/motion/)
+
+## Development 
+
+```bash
+npm install
+```
+
+Then start the development server using:
+
+```bash
+npm run dev
+```
 
 
-My Next.js Template
- - Next.js
- - TypeScript
- - ESLint
- - Prettier
- - TailwindCSS
- 
-Honestly there are probably better boilerplates online with more features, but I thought it would be interesting to build this one up from scratch while I discover new things.
