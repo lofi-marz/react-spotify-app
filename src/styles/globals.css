@@ -18,6 +18,10 @@
     .text-gradient{
         @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent !important
     }
+
+    .p-inherit {
+        padding: inherit;
+    }
 }
 
 @layer components {
@@ -27,13 +31,6 @@
         grid-template-columns: 1fr;
     }
 
-    .swipe-album {
-
-    }
-
-    .swipe-controls {
-
-    }
 
     .card {
         @apply rounded-lg;
