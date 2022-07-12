@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import demondays from './albums/demondays.jpg';
@@ -7,8 +7,7 @@ import graduation from './albums/graduation.jpg';
 import { FaHeart, FaThumbsDown, FaThumbsUp } from 'react-icons/fa';
 import { SwipeDirection } from './types';
 import { SwipeCardStack } from './SwipeCardStack';
-import axios from 'axios';
-import {}
+
 /*interface AlbumSource {
     prev: (count: number) => st
     next: (count: number) => string[];
@@ -42,11 +41,7 @@ function SwipeControls({ onSwipe }: SwipeControlsProps) {
 
 export function Swipe() {
     const [current, setCurrent] = useState(0);
-    useEffect(() => {
-        axios.get(
-            'https://api.spotify.com/v1/playlists/4dCrUKnLCNoAnbAz65uMDS',{params:}
-        );
-    }, []);
+    useSpotifyPlaylistRequest();
     const onSwipe = (direction: SwipeDirection) => {
         console.log(direction);
         setCurrent((prevCurrent) => {
