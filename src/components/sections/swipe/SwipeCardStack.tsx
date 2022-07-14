@@ -1,32 +1,36 @@
 import { MutableRefObject, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import clsx from 'clsx';
-import Image, { StaticImageData } from 'next/image';
 import { SwipeDirection } from './types';
+import { AlbumImage, Track } from 'spotify-api';
 
 export type SwipeCardStackProps = {
-    songs: StaticImageData[];
+    songs: Track[];
     onSwipe: (direction: SwipeDirection) => void;
     current: number;
 };
 
 export type SwipeCardProps = {
-    img: StaticImageData;
+    img: AlbumImage;
     onSwipe: (direction: SwipeDirection) => void;
     containerRef: MutableRefObject<null>;
-    top?: boolean;
+    index: number;
 };
 
-function SwipeCard({ img, onSwipe, containerRef, top }: SwipeCardProps) {
+function SwipeCard({ img, onSwipe, containerRef, index }: SwipeCardProps) {
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+    console.log(img.url, top);
     return (
         <motion.div
-            className={clsx('m-auto w-full w-2/3 shadow-2xl', {
-                absolute: !top,
-            })}
-            key={img.src}
+            className={clsx(
+                'm-auto aspect-square h-72 w-72 shadow-2xl  shadow-2xl',
+                {
+                    absolute: index > 0,
+                }
+            )}
             layout
-            drag={top}
+            drag={index === 0}
+            layoutId={index === 0 ? 'top' : undefined}
             dragConstraints={containerRef}
             dragSnapToOrigin={true}
             onDragStart={(event, info) => {
@@ -41,14 +45,14 @@ function SwipeCard({ img, onSwipe, containerRef, top }: SwipeCardProps) {
                     onSwipe(Math.sign(delta.x) === -1 ? 'left' : 'right');
                 }
             }}
-            initial={{ opacity: 0 }}
+            initial={{ opacity: 0, x: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}>
-            <Image
+            exit={{ opacity: 0 }}
+            style={{ zIndex: 5 - index }}>
+            <img
                 alt="Album cover"
-                className="card"
-                src={img}
-                layout="responsive"
+                className="card h-full w-full"
+                src={img.url}
             />
         </motion.div>
     );
@@ -60,24 +64,22 @@ export function SwipeCardStack({
     current,
 }: SwipeCardStackProps) {
     const containerRef = useRef(null);
-    const top = songs[current];
-    const filteredSongs = [
-        ...songs.slice(0, current).concat(songs.slice(current + 1)),
-        top,
-    ];
-
+    const reversedSongs = [...songs];
     return (
         <div
-            className="flex aspect-square w-full items-center justify-center overflow-hidden"
+            className="flex aspect-square w-full items-center justify-center space-x-5 space-y-5 overflow-hidden"
             ref={containerRef}>
-            {filteredSongs.map((s, i) => (
-                <SwipeCard
-                    img={s}
-                    onSwipe={onSwipe}
-                    top={i === songs.length - 1}
-                    key={s.src}
-                    containerRef={containerRef}></SwipeCard>
-            ))}
+            <AnimatePresence>
+                {reversedSongs.map((s, i) => (
+                    <SwipeCard
+                        img={s.album.images[0]}
+                        onSwipe={onSwipe}
+                        index={i}
+                        key={`${s.name}-stack`}
+                        containerRef={containerRef}
+                    />
+                ))}
+            </AnimatePresence>
         </div>
     );
 }

@@ -1,19 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
-import demondays from './albums/demondays.jpg';
-import mbdtf from './albums/mbdtf.jpg';
-import graduation from './albums/graduation.jpg';
 import { FaHeart, FaThumbsDown, FaThumbsUp } from 'react-icons/fa';
 import { SwipeDirection } from './types';
 import { SwipeCardStack } from './SwipeCardStack';
-
+import { Track, useSpotifyPlaylistRequest } from 'spotify-api';
 /*interface AlbumSource {
     prev: (count: number) => st
     next: (count: number) => string[];
 }*/
-
-const songs = [mbdtf, graduation, demondays];
 
 type SwipeControlsProps = {
     onSwipe: (direction: SwipeDirection) => void;
@@ -41,12 +36,13 @@ function SwipeControls({ onSwipe }: SwipeControlsProps) {
 
 export function Swipe() {
     const [current, setCurrent] = useState(0);
-    useSpotifyPlaylistRequest();
+    const [songs, setSongs] = useState<Track[]>([]);
     const onSwipe = (direction: SwipeDirection) => {
         console.log(direction);
+        if (!songs) return;
         setCurrent((prevCurrent) => {
             console.log(prevCurrent);
-            const newIndex = prevCurrent + (direction == 'left' ? -1 : 1);
+            const newIndex = prevCurrent + 1;
             if (newIndex < 0) {
                 return songs.length - 1;
             } else if (newIndex >= songs.length) {
@@ -57,40 +53,51 @@ export function Swipe() {
         });
     };
 
-    /*
+    const playlist = useSpotifyPlaylistRequest();
 
-     */
+    useEffect(() => {
+        if (!playlist) return;
+        console.log('Playlist:', playlist);
+        setSongs(playlist.tracks.items.map(({ track }) => track));
+    }, [playlist]);
+
+    useEffect(() => {
+        console.log(songs);
+    }, [songs]);
+
     return (
-        <div className="flex h-screen flex-col justify-center overflow-hidden">
-            <AnimatePresence>
-                <div className="fixed top-0 left-0 -z-10 flex h-screen w-screen items-center justify-center overflow-hidden">
-                    <motion.div
-                        className="aspect-square h-[110vh] brightness-50 saturate-50"
-                        animate={{ x: [0, -250, 0] }}
-                        transition={{ duration: 40, repeat: Infinity }}
-                        key={songs[current].src}>
-                        <Image
-                            className="transition-all"
-                            src={songs[current]}
-                            layout="fill"
-                        />
-                    </motion.div>
-                    <motion.div
-                        className="fixed h-screen w-screen bg-black"
-                        key={`${songs[current].src}-cover`}
-                        initial={{ opacity: 1 }}
-                        animate={{ opacity: 0 }}
-                        transition={{ duration: 0.5 }}></motion.div>
-                </div>
-            </AnimatePresence>
-            <AnimatePresence>
+        songs.length && (
+            <div className="flex h-screen flex-col justify-center">
+                <AnimatePresence>
+                    <div className="fixed top-0 left-0 -z-10 flex h-screen w-screen scale-150 items-center justify-center overflow-hidden">
+                        <motion.div
+                            className="aspect-square h-screen brightness-50 saturate-50"
+                            animate={{ x: [0, -250, 0] }}
+                            transition={{ duration: 40, repeat: Infinity }}
+                            key={songs[current].name}
+                            layout>
+                            <Image
+                                className="transition-all"
+                                src={songs[current].album.images[0].url}
+                                layout="fill"
+                            />
+                        </motion.div>
+                        <motion.div
+                            className="fixed h-screen w-screen bg-black"
+                            key={`${songs[current].name}-cover`}
+                            initial={{ opacity: 1 }}
+                            animate={{ opacity: 0 }}
+                            transition={{ duration: 1 }}></motion.div>
+                    </div>
+                </AnimatePresence>
+
                 <SwipeCardStack
                     onSwipe={onSwipe}
-                    songs={songs}
+                    songs={songs.slice(current, current + 5)}
                     current={current}
                 />
-            </AnimatePresence>
-            <SwipeControls onSwipe={onSwipe} />
-        </div>
+                <SwipeControls onSwipe={onSwipe} />
+            </div>
+        )
     );
 }
