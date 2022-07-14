@@ -23,7 +23,7 @@ function SwipeCard({ img, onSwipe, containerRef, index }: SwipeCardProps) {
     return (
         <motion.div
             className={clsx(
-                'm-auto aspect-square h-72 w-72 shadow-2xl  shadow-2xl',
+                'card m-auto aspect-square h-72 w-72 shadow-2xl  shadow-2xl',
                 {
                     absolute: index > 0,
                 }
@@ -33,6 +33,7 @@ function SwipeCard({ img, onSwipe, containerRef, index }: SwipeCardProps) {
             layoutId={index === 0 ? 'top' : undefined}
             dragConstraints={containerRef}
             dragSnapToOrigin={true}
+            dragElastic={0.05}
             onDragStart={(event, info) => {
                 setDragStart(info.point);
             }}
@@ -67,7 +68,7 @@ export function SwipeCardStack({
     const reversedSongs = [...songs];
     return (
         <div
-            className="flex aspect-square w-full items-center justify-center space-x-5 space-y-5 overflow-hidden"
+            className="flex aspect-square w-full items-center justify-center space-x-5 space-y-5 "
             ref={containerRef}>
             <AnimatePresence>
                 {reversedSongs.map((s, i) => (

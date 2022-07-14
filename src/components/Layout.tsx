@@ -4,9 +4,7 @@ import { WithChildrenProps } from 'types';
 
 type LayoutProps = WithChildrenProps;
 
-
 export function Layout({ children }: LayoutProps) {
-
     return (
         <div className="h-full min-h-screen w-screen">
             <div className="flex flex-col items-center justify-center">
@@ -16,8 +14,8 @@ export function Layout({ children }: LayoutProps) {
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
 
-                <main className="flex min-h-screen w-screen grow flex-col dark:bg-zinc-900 dark:text-white">
-                   {children}
+                <main className="flex min-h-screen w-screen grow flex-col overflow-clip text-zinc-900 dark:bg-zinc-900">
+                    {children}
                 </main>
             </div>
         </div>

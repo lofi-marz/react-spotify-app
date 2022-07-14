@@ -34,6 +34,35 @@ function SwipeControls({ onSwipe }: SwipeControlsProps) {
     );
 }
 
+function ScrollingBackground({ track }: { track: Track }) {
+    //Not sure about this
+    return (
+        <AnimatePresence>
+            <div className="fixed top-0 left-0 -z-10 flex h-screen w-screen scale-150 items-center justify-center overflow-hidden">
+                <motion.div
+                    className="aspect-square h-screen brightness-50 saturate-50"
+                    animate={{ x: [0, -250, 0] }}
+                    transition={{ duration: 40, repeat: Infinity }}
+                    key={track.name}
+                    layout>
+                    <Image
+                        className="transition-all"
+                        src={track.album.images[0].url}
+                        layout="fill"
+                        alt={`${track.album.name} cover`}
+                    />
+                </motion.div>
+                <motion.div
+                    className="fixed h-screen w-screen bg-black"
+                    key={`${track.name}-cover`}
+                    initial={{ opacity: 1 }}
+                    animate={{ opacity: 0 }}
+                    transition={{ duration: 1 }}></motion.div>
+            </div>
+        </AnimatePresence>
+    );
+}
+
 export function Swipe() {
     const [current, setCurrent] = useState(0);
     const [songs, setSongs] = useState<Track[]>([]);
@@ -69,25 +98,13 @@ export function Swipe() {
         songs.length && (
             <div className="flex h-screen flex-col justify-center">
                 <AnimatePresence>
-                    <div className="fixed top-0 left-0 -z-10 flex h-screen w-screen scale-150 items-center justify-center overflow-hidden">
-                        <motion.div
-                            className="aspect-square h-screen brightness-50 saturate-50"
-                            animate={{ x: [0, -250, 0] }}
-                            transition={{ duration: 40, repeat: Infinity }}
-                            key={songs[current].name}
-                            layout>
-                            <Image
-                                className="transition-all"
-                                src={songs[current].album.images[0].url}
-                                layout="fill"
-                            />
-                        </motion.div>
-                        <motion.div
-                            className="fixed h-screen w-screen bg-black"
-                            key={`${songs[current].name}-cover`}
-                            initial={{ opacity: 1 }}
-                            animate={{ opacity: 0 }}
-                            transition={{ duration: 1 }}></motion.div>
+                    <div className="mx-auto flex w-64 flex-col items-center justify-center text-center font-title">
+                        <h1 className="w-full truncate text-4xl font-bold">
+                            {songs[current].name}
+                        </h1>
+                        <h2 className="text-gradient w-full w-64 truncate text-2xl">
+                            {songs[current].artists[0].name}
+                        </h2>
                     </div>
                 </AnimatePresence>
 
@@ -96,6 +113,7 @@ export function Swipe() {
                     songs={songs.slice(current, current + 5)}
                     current={current}
                 />
+
                 <SwipeControls onSwipe={onSwipe} />
             </div>
         )
