@@ -25,15 +25,14 @@
 }
 
 @layer components {
-    .swipe-container {
-        display: grid;
-        grid-template-rows: [album] 100vw [controls] 1fr;
-        grid-template-columns: 1fr;
-    }
 
 
     .card {
         @apply rounded-lg;
+    }
+
+    .icon-button {
+        @apply
     }
 }
 

@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
-import { FaHeart, FaThumbsDown, FaThumbsUp } from 'react-icons/fa';
+import { FaThumbsDown, FaThumbsUp } from 'react-icons/fa';
 import { SwipeDirection } from './types';
 import { SwipeCardStack } from './SwipeCardStack';
 import { Track } from 'spotify-api';
+import { TrackControls, TrackProgressBar } from './TrackControls';
 /*interface AlbumSource {
     prev: (count: number) => st
     next: (count: number) => string[];
@@ -19,16 +20,14 @@ type SwipeControlsProps = {
 function SwipeControls({ onSwipe }: SwipeControlsProps) {
     //TODO: Refactor these buttons into 1 component
     return (
-        <div className="flex h-48 items-center justify-center gap-5 font-black">
+        <div className="flex items-center justify-center gap-5 font-black">
             <button
                 className="rounded-full bg-white p-5 text-4xl text-red-500 shadow-2xl"
                 onClick={() => onSwipe('left')}
                 data-testid="swipe-left">
                 <FaThumbsDown />
             </button>
-            <button className="rounded-full bg-white p-5 text-4xl text-blue-500 shadow-2xl transition-all active:brightness-50">
-                <FaHeart />
-            </button>
+
             <button
                 className="rounded-full bg-white p-5 text-4xl text-green-500 shadow-2xl"
                 onClick={() => onSwipe('left')}
@@ -91,29 +90,29 @@ export function Swipe({ tracks }: SwipeProps) {
     };
 
     return tracks.length ? (
-        <div className="flex h-screen flex-col justify-center">
-            <AnimatePresence>
-                <div className="mx-auto flex w-64 flex-col items-center justify-center text-center">
-                    <motion.h1
-                        className="w-full overflow-clip text-3xl font-bold"
-                        data-testid="track-name">
-                        {tracks[current].name}
-                    </motion.h1>
-                    <h2
-                        className="text-gradient w-full w-64 truncate text-2xl"
-                        data-testid="track-artist-name">
-                        {tracks[current].artists[0].name}
-                    </h2>
-                </div>
-            </AnimatePresence>
-
+        <div className="flex h-screen flex-col items-center justify-center">
             <SwipeCardStack
                 onSwipe={onSwipe}
                 songs={tracks.slice(current, current + 5)}
                 current={current}
             />
-
+            <AnimatePresence>
+                <div className="flex flex-col items-center justify-end p-5 text-center font-title">
+                    <motion.h1
+                        className="w-full overflow-clip text-2xl font-bold"
+                        data-testid="track-name">
+                        {tracks[current].name}
+                    </motion.h1>
+                    <h2
+                        className="text-gradient w-full w-64 truncate text-xl"
+                        data-testid="track-artist-name">
+                        {tracks[current].artists[0].name}
+                    </h2>
+                </div>
+            </AnimatePresence>
+            <TrackProgressBar />
             <SwipeControls onSwipe={onSwipe} />
+            <TrackControls />
         </div>
     ) : (
         <h1></h1>
