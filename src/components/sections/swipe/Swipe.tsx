@@ -1,25 +1,29 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import { FaHeart, FaThumbsDown, FaThumbsUp } from 'react-icons/fa';
 import { SwipeDirection } from './types';
 import { SwipeCardStack } from './SwipeCardStack';
-import { Track, useSpotifyPlaylistRequest } from 'spotify-api';
+import { Track } from 'spotify-api';
 /*interface AlbumSource {
     prev: (count: number) => st
     next: (count: number) => string[];
 }*/
+
+//TODO: Rename this file to something more useful
 
 type SwipeControlsProps = {
     onSwipe: (direction: SwipeDirection) => void;
 };
 
 function SwipeControls({ onSwipe }: SwipeControlsProps) {
+    //TODO: Refactor these buttons into 1 component
     return (
         <div className="flex h-48 items-center justify-center gap-5 font-black">
             <button
                 className="rounded-full bg-white p-5 text-4xl text-red-500 shadow-2xl"
-                onClick={() => onSwipe('left')}>
+                onClick={() => onSwipe('left')}
+                data-testid="swipe-left">
                 <FaThumbsDown />
             </button>
             <button className="rounded-full bg-white p-5 text-4xl text-blue-500 shadow-2xl transition-all active:brightness-50">
@@ -27,7 +31,8 @@ function SwipeControls({ onSwipe }: SwipeControlsProps) {
             </button>
             <button
                 className="rounded-full bg-white p-5 text-4xl text-green-500 shadow-2xl"
-                onClick={() => onSwipe('left')}>
+                onClick={() => onSwipe('left')}
+                data-testid="swipe-right">
                 <FaThumbsUp />
             </button>
         </div>
@@ -63,18 +68,21 @@ function ScrollingBackground({ track }: { track: Track }) {
     );
 }
 
-export function Swipe() {
+type SwipeProps = {
+    tracks: Track[];
+};
+export function Swipe({ tracks }: SwipeProps) {
     const [current, setCurrent] = useState(0);
-    const [songs, setSongs] = useState<Track[]>([]);
+
     const onSwipe = (direction: SwipeDirection) => {
         console.log(direction);
-        if (!songs) return;
+        if (!tracks) return;
         setCurrent((prevCurrent) => {
             console.log(prevCurrent);
             const newIndex = prevCurrent + 1;
             if (newIndex < 0) {
-                return songs.length - 1;
-            } else if (newIndex >= songs.length) {
+                return tracks.length - 1;
+            } else if (newIndex >= tracks.length) {
                 return 0;
             }
 
@@ -82,40 +90,32 @@ export function Swipe() {
         });
     };
 
-    const playlist = useSpotifyPlaylistRequest();
+    return tracks.length ? (
+        <div className="flex h-screen flex-col justify-center">
+            <AnimatePresence>
+                <div className="mx-auto flex w-64 flex-col items-center justify-center text-center">
+                    <motion.h1
+                        className="w-full overflow-clip text-3xl font-bold"
+                        data-testid="track-name">
+                        {tracks[current].name}
+                    </motion.h1>
+                    <h2
+                        className="text-gradient w-full w-64 truncate text-2xl"
+                        data-testid="track-artist-name">
+                        {tracks[current].artists[0].name}
+                    </h2>
+                </div>
+            </AnimatePresence>
 
-    useEffect(() => {
-        if (!playlist) return;
-        console.log('Playlist:', playlist);
-        setSongs(playlist.tracks.items.map(({ track }) => track));
-    }, [playlist]);
+            <SwipeCardStack
+                onSwipe={onSwipe}
+                songs={tracks.slice(current, current + 5)}
+                current={current}
+            />
 
-    useEffect(() => {
-        console.log(songs);
-    }, [songs]);
-
-    return (
-        songs.length && (
-            <div className="flex h-screen flex-col justify-center">
-                <AnimatePresence>
-                    <div className="mx-auto flex w-64 flex-col items-center justify-center text-center font-title">
-                        <h1 className="w-full truncate text-4xl font-bold">
-                            {songs[current].name}
-                        </h1>
-                        <h2 className="text-gradient w-full w-64 truncate text-2xl">
-                            {songs[current].artists[0].name}
-                        </h2>
-                    </div>
-                </AnimatePresence>
-
-                <SwipeCardStack
-                    onSwipe={onSwipe}
-                    songs={songs.slice(current, current + 5)}
-                    current={current}
-                />
-
-                <SwipeControls onSwipe={onSwipe} />
-            </div>
-        )
+            <SwipeControls onSwipe={onSwipe} />
+        </div>
+    ) : (
+        <h1></h1>
     );
 }

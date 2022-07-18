@@ -19,7 +19,7 @@ export type SwipeCardProps = {
 
 function SwipeCard({ img, onSwipe, containerRef, index }: SwipeCardProps) {
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-    console.log(img.url, top);
+    const top = index === 0;
     return (
         <motion.div
             className={clsx(
@@ -29,8 +29,8 @@ function SwipeCard({ img, onSwipe, containerRef, index }: SwipeCardProps) {
                 }
             )}
             layout
-            drag={index === 0}
-            layoutId={index === 0 ? 'top' : undefined}
+            drag={top}
+            layoutId={top ? 'top' : undefined}
             dragConstraints={containerRef}
             dragSnapToOrigin={true}
             dragElastic={0.05}
@@ -46,10 +46,11 @@ function SwipeCard({ img, onSwipe, containerRef, index }: SwipeCardProps) {
                     onSwipe(Math.sign(delta.x) === -1 ? 'left' : 'right');
                 }
             }}
-            initial={{ opacity: 0, x: 0 }}
+            initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            style={{ zIndex: 5 - index }}>
+            style={{ zIndex: 5 - index }}
+            data-testid={top ? 'card-stack-top' : `card-stack-${index}`}>
             <img
                 alt="Album cover"
                 className="card h-full w-full"
