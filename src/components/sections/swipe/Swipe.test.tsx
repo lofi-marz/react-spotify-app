@@ -4,7 +4,7 @@ import { Track } from '../../../spotify-api';
 
 import React from 'react';
 
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 function mockTrack(id = 0): Track {
     return {
@@ -27,17 +27,24 @@ function mockTrack(id = 0): Track {
 
 describe('Swipe stack', () => {
     test('repeats on last track', () => {
+        //given
         const mockTracks: Track[] = [mockTrack(0), mockTrack(1), mockTrack(2)];
 
-        const component = render(<Swipe tracks={mockTracks} />);
-        fireEvent.click(component.getByTestId('swipe-right'));
-        fireEvent.click(component.getByTestId('swipe-right'));
-        fireEvent.click(component.getByTestId('swipe-right'));
-        //I think framer motion is causing there to be two of these initially
-        console.log(component.getByTestId('track-name'));
-        console.log(component.getByTestId('track-artist-name'));
-        expect(component.getByTestId('track-name')).toHaveTextContent(
+        render(<Swipe tracks={mockTracks} />);
+
+        //when
+        const swipeRightButton = screen.getByTestId('swipe-right');
+        fireEvent.click(swipeRightButton);
+        fireEvent.click(swipeRightButton);
+        fireEvent.click(swipeRightButton);
+
+        //then
+        expect(screen.getByTestId('track-name')).toHaveTextContent(
             mockTracks[0].name
+        );
+
+        expect(screen.getByTestId('track-artist-name')).toHaveTextContent(
+            mockTracks[0].artists[0].name
         );
     });
 });
