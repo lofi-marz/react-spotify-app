@@ -2,6 +2,7 @@ import { MutableRefObject, useRef, useState } from 'react';
 import {
     AnimatePresence,
     motion,
+    MotionValue,
     useMotionValue,
     useTransform,
 } from 'framer-motion';
@@ -22,6 +23,31 @@ export type SwipeCardProps = {
     index: number;
 };
 
+function SwipeCardOverlay({
+    leftOpacity,
+    rightOpacity,
+}: {
+    leftOpacity: MotionValue;
+    rightOpacity: MotionValue;
+}) {
+    return (
+        <>
+            <motion.div
+                className="card absolute top-0 left-0 flex aspect-square h-72 w-72 items-center justify-center bg-primary text-white opacity-50"
+                style={{ opacity: rightOpacity }}
+                key="right-swipe-overlay">
+                <FaHeart />
+            </motion.div>
+            <motion.div
+                className="card absolute top-0 left-0 flex aspect-square h-72 w-72 items-center justify-center bg-primary text-white opacity-50"
+                style={{ opacity: leftOpacity }}
+                key="left-swipe-overlay">
+                <FaTrash />
+            </motion.div>
+        </>
+    );
+}
+
 function SwipeCard({ img, onSwipe, containerRef, index }: SwipeCardProps) {
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
     const top = index === 0;
@@ -30,8 +56,9 @@ function SwipeCard({ img, onSwipe, containerRef, index }: SwipeCardProps) {
     const x = useMotionValue(0);
     const posX = useTransform(x, (x) => (x > 0 ? x : 0));
     const negX = useTransform(x, (x) => (x < 0 ? -x : 0));
-    const overlayOpacity = useTransform(posX, dragRange, [0, 0, 0.8]);
-    const crossOverlayOpacity = useTransform(negX, dragRange, [0, 0, 0.8]);
+    const rightOverlayOpacity = useTransform(posX, dragRange, [0, 0, 0.8]);
+    const leftOverlayOpacity = useTransform(negX, dragRange, [0, 0, 0.8]);
+
     return (
         <motion.div
             className="card absolute aspect-square h-72 w-72 text-5xl shadow"
@@ -40,7 +67,7 @@ function SwipeCard({ img, onSwipe, containerRef, index }: SwipeCardProps) {
             layoutId={top ? 'top' : undefined}
             dragConstraints={containerRef}
             dragSnapToOrigin={true}
-            dragElastic={0.05}
+            dragElastic={0.3}
             onDragStart={(event, info) => {
                 setDragStart(info.point);
             }}
@@ -49,7 +76,7 @@ function SwipeCard({ img, onSwipe, containerRef, index }: SwipeCardProps) {
                     x: info.point.x - dragStart.x,
                     y: info.point.y - dragStart.y,
                 };
-                if (Math.abs(delta.x) > 100) {
+                if (Math.abs(delta.x) > 75) {
                     onSwipe(Math.sign(delta.x) === -1 ? 'left' : 'right');
                 }
             }}
@@ -63,18 +90,10 @@ function SwipeCard({ img, onSwipe, containerRef, index }: SwipeCardProps) {
                 className="card h-full w-full"
                 src={img.url}
             />
-            <motion.div
-                className="card absolute top-0 left-0 flex aspect-square h-72 w-72 items-center justify-center bg-primary text-white opacity-50"
-                style={{ opacity: overlayOpacity }}
-                key="right-swipe-overlay">
-                <FaHeart />
-            </motion.div>
-            <motion.div
-                className="card absolute top-0 left-0 flex aspect-square h-72 w-72 items-center justify-center bg-primary text-white opacity-50"
-                style={{ opacity: crossOverlayOpacity }}
-                key="left-swipe-overlay">
-                <FaTrash />
-            </motion.div>
+            <SwipeCardOverlay
+                leftOpacity={leftOverlayOpacity}
+                rightOpacity={rightOverlayOpacity}
+            />
         </motion.div>
     );
 }
@@ -88,7 +107,7 @@ export function SwipeCardStack({
     const reversedSongs = [...songs];
     return (
         <div
-            className="flex aspect-square w-full items-center justify-center"
+            className="flex aspect-square w-full flex-col items-center justify-center"
             ref={containerRef}>
             <AnimatePresence>
                 {reversedSongs.map((s, i) => (

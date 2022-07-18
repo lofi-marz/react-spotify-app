@@ -96,20 +96,20 @@ export function Swipe({ tracks }: SwipeProps) {
                 songs={tracks.slice(current, current + 5)}
                 current={current}
             />
-            <AnimatePresence>
-                <div className="flex flex-col items-center justify-end p-5 text-center font-title">
-                    <motion.h1
-                        className="w-full overflow-clip text-2xl font-bold"
-                        data-testid="track-name">
-                        {tracks[current].name}
-                    </motion.h1>
-                    <h2
-                        className="text-gradient w-full w-64 truncate text-xl"
-                        data-testid="track-artist-name">
-                        {tracks[current].artists[0].name}
-                    </h2>
-                </div>
-            </AnimatePresence>
+
+            <div className="flex flex-col items-center justify-end overflow-clip p-5 text-center font-title">
+                <h1
+                    className="w-full overflow-clip text-2xl font-bold"
+                    data-testid="track-name">
+                    {tracks[current].name}
+                </h1>
+                <h2
+                    className="text-gradient w-full w-64 truncate text-xl"
+                    data-testid="track-artist-name">
+                    {tracks[current].artists[0].name}
+                </h2>
+            </div>
+
             <TrackProgressBar />
             <SwipeControls onSwipe={onSwipe} />
             <TrackControls />
