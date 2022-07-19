@@ -1,20 +1,22 @@
-import { Swipe } from 'components/sections/swipe/Swipe';
 import type { NextPage } from 'next';
 
-import React, { useEffect, useState } from 'react';
-import { Track, useSpotifyPlaylistRequest } from '../spotify-api';
+import React from 'react';
+import { useSpotifyPlaylistRequest } from '../spotify-api';
+import { Swipe } from '../components/sections/swipe/Swipe';
 
 const Home: NextPage = () => {
     //TODO: Change this to serversideprops
-    const playlist = useSpotifyPlaylistRequest();
-    const [tracks, setTracks] = useState<Track[]>([]);
-    useEffect(() => {
-        if (!playlist) return;
-        console.log('Playlist:', playlist);
-        setTracks(playlist.tracks.items.map(({ track }) => track));
-    }, [playlist]);
+    const {
+        status,
+        data: playlist,
+        error,
+        isFetching,
+    } = useSpotifyPlaylistRequest();
 
-    return <Swipe tracks={tracks}></Swipe>;
+    if (status != 'success') return <h1>Loading</h1>;
+    return (
+        <Swipe tracks={playlist.tracks.items.map(({ track }) => track)}></Swipe>
+    );
 };
 
 export default Home;

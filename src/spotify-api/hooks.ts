@@ -1,91 +1,65 @@
-import { useEffect, useState } from 'react';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import spotify from '../../config.json';
 import qs from 'qs';
 import path from 'path';
+import { useQuery } from '@tanstack/react-query';
 import { GetPlaylistResponse } from './types';
 
-function useSpotifyToken() {
+async function getSpotifyToken() {
     const AUTH_URL = 'https://accounts.spotify.com/api/token';
     const { clientId, clientSecret } = spotify;
-    const [token, setToken] = useState<string | null>(null);
-    useEffect(() => {
-        axios
-            .post(
-                AUTH_URL,
-                qs.stringify({
-                    grant_type: 'client_credentials',
-                }),
-                {
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        Authorization:
-                            'Basic ' +
-                            new Buffer(clientId + ':' + clientSecret).toString(
-                                'base64'
-                            ),
-                    },
-                }
-            )
-            .then((res) => {
-                setToken(res.data['access_token']);
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    }, []);
-    return token;
+    const { data } = await axios.post(
+        AUTH_URL,
+        qs.stringify({
+            grant_type: 'client_credentials',
+        }),
+        {
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization:
+                    'Basic ' +
+                    new Buffer(clientId + ':' + clientSecret).toString(
+                        'base64'
+                    ),
+            },
+        }
+    );
+    return data.access_token;
 }
 
-function useSpotifyApiRequest(params: any, apiPath: string) {
-    const BASE_URL = 'https://api.spotify.com/v1/playlists/';
-    const token = useSpotifyToken();
+function useSpotifyToken() {
+    return useQuery(['token'], () => getSpotifyToken());
+}
+
+function getSpotifyApi<T>(params: object, token: string, apiPath: string) {
+    const BASE_URL = 'https://api.spotify.com/v1/';
     const url = path.join(BASE_URL, apiPath);
-    const [response, setResponse] = useState<AxiosResponse<any> | null>(null);
-    useEffect(() => {
-        if (!token) return;
-        axios
-            .get(url, {
-                params,
-                headers: {
-                    Authorization: 'Bearer ' + token,
-                },
-            })
-            .then((res) => {
-                setResponse(res);
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    }, [token]);
-    return response;
+    return axios
+        .get<T>(url, {
+            params,
+            headers: {
+                Authorization: 'Bearer ' + token,
+            },
+        })
+        .then((res) => res.data);
+}
+
+function useSpotifyApiRequest<T>(params: object, apiPath: string) {
+    const { data: token } = useSpotifyToken();
+    return useQuery(
+        ['spotify', params, apiPath],
+        () => getSpotifyApi<T>(params, token, apiPath),
+        { enabled: !!token }
+    );
 }
 
 export function useSpotifyPlaylistRequest() {
-    const TEST_PLAYLIST_URL =
-        'https://api.spotify.com/v1/playlists/4dCrUKnLCNoAnbAz65uMDS';
+    const TEST_PLAYLIST_URL = 'playlists/4dCrUKnLCNoAnbAz65uMDS';
     const query = {
         additional_types: 'track',
         market: 'GB',
     };
-    const token = useSpotifyToken();
-    const [response, setResponse] = useState<GetPlaylistResponse | null>(null);
-    useEffect(() => {
-        if (!token) return;
-        axios
-            .get<GetPlaylistResponse>(TEST_PLAYLIST_URL, {
-                params: query,
-                headers: {
-                    Authorization: 'Bearer ' + token,
-                },
-            })
-            .then((res) => {
-                setResponse(res.data);
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    }, [token]);
-    return response;
+
+    return useSpotifyApiRequest<GetPlaylistResponse>(query, TEST_PLAYLIST_URL);
 }

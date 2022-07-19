@@ -26,6 +26,25 @@ function mockTrack(id = 0): Track {
 }
 
 describe('Swipe stack', () => {
+    test('can swipe left', () => {
+        //given
+        const mockTracks: Track[] = [mockTrack(0), mockTrack(1), mockTrack(2)];
+
+        render(<Swipe tracks={mockTracks} />);
+
+        //when
+        const swipeLeftButton = screen.getByTestId('swipe-left');
+        fireEvent.click(swipeLeftButton);
+
+        //then
+        expect(screen.getByTestId('track-name')).toHaveTextContent(
+            mockTracks[1].name
+        );
+
+        expect(screen.getByTestId('track-artist-name')).toHaveTextContent(
+            mockTracks[1].artists[0].name
+        );
+    });
     test('repeats on last track', () => {
         //given
         const mockTracks: Track[] = [mockTrack(0), mockTrack(1), mockTrack(2)];
