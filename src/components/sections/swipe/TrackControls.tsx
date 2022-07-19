@@ -11,17 +11,17 @@ export function TrackControls() {
     return (
         <div className="flex w-full justify-evenly">
             <button
-                className="p-5 text-4xl text-red-500 drop-shadow-2xl"
+                className="p-5 text-4xl text-red-500 drop-shadow"
                 data-testid="swipe-left">
                 <FaBackward />
             </button>
             <button
-                className="rounded-full bg-white p-5 text-4xl text-red-500 shadow-2xl"
+                className="rounded-full bg-white p-5 text-4xl text-red-500 shadow"
                 data-testid="music-play">
                 {isPlaying ? <FaPause /> : <FaPlay />}
             </button>
             <button
-                className="p-5 text-4xl text-red-500 drop-shadow-2xl"
+                className="p-5 text-4xl text-red-500 drop-shadow"
                 data-testid="swipe-left">
                 <FaForward />
             </button>
@@ -39,7 +39,7 @@ export function TrackProgressBar() {
 
     return (
         <div
-            className="flex  w-full items-center px-10"
+            className="flex  w-full items-center px-10 py-5"
             onPointerDown={startDrag}>
             <motion.div
                 key="circle"

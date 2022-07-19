@@ -8,7 +8,7 @@ import {
 } from 'framer-motion';
 import { SwipeDirection } from './types';
 import { AlbumImage, Track } from 'spotify-api';
-import { FaHeart, FaTrash } from 'react-icons/all';
+import { FaHeart, FaTrash } from 'react-icons/fa';
 
 export type SwipeCardStackProps = {
     songs: Track[];
@@ -33,13 +33,13 @@ function SwipeCardOverlay({
     return (
         <>
             <motion.div
-                className="card absolute top-0 left-0 flex aspect-square h-72 w-72 items-center justify-center bg-primary text-white opacity-50"
+                className="card absolute top-0 left-0 flex aspect-square h-full w-full items-center justify-center bg-green-500 text-white opacity-50"
                 style={{ opacity: rightOpacity }}
                 key="right-swipe-overlay">
                 <FaHeart />
             </motion.div>
             <motion.div
-                className="card absolute top-0 left-0 flex aspect-square h-72 w-72 items-center justify-center bg-primary text-white opacity-50"
+                className="card absolute top-0 left-0 flex aspect-square h-full w-full   items-center justify-center bg-red-500 text-white opacity-50"
                 style={{ opacity: leftOpacity }}
                 key="left-swipe-overlay">
                 <FaTrash />
@@ -61,7 +61,7 @@ function SwipeCard({ img, onSwipe, containerRef, index }: SwipeCardProps) {
 
     return (
         <motion.div
-            className="card absolute aspect-square h-72 w-72 text-5xl shadow"
+            className="card absolute aspect-square w-72 text-5xl shadow"
             layout
             drag={top}
             layoutId={top ? 'top' : undefined}
@@ -90,10 +90,12 @@ function SwipeCard({ img, onSwipe, containerRef, index }: SwipeCardProps) {
                 className="card h-full w-full"
                 src={img.url}
             />
-            <SwipeCardOverlay
-                leftOpacity={leftOverlayOpacity}
-                rightOpacity={rightOverlayOpacity}
-            />
+            {top && (
+                <SwipeCardOverlay
+                    leftOpacity={leftOverlayOpacity}
+                    rightOpacity={rightOverlayOpacity}
+                />
+            )}
         </motion.div>
     );
 }
@@ -107,7 +109,7 @@ export function SwipeCardStack({
     const reversedSongs = [...songs];
     return (
         <div
-            className="flex aspect-square w-full flex-col items-center justify-center"
+            className="flex aspect-square w-72 flex-col items-center justify-center"
             ref={containerRef}>
             <AnimatePresence>
                 {reversedSongs.map((s, i) => (

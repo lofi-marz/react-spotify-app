@@ -3,9 +3,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import { FaThumbsDown, FaThumbsUp } from 'react-icons/fa';
 import { SwipeDirection } from './types';
-import { SwipeCardStack } from './SwipeCardStack';
 import { Track } from 'spotify-api';
 import { TrackControls, TrackProgressBar } from './TrackControls';
+import { SwipeCardStack } from './SwipeCardStack';
 /*interface AlbumSource {
     prev: (count: number) => st
     next: (count: number) => string[];
@@ -22,14 +22,14 @@ function SwipeControls({ onSwipe }: SwipeControlsProps) {
     return (
         <div className="flex items-center justify-center gap-5 font-black">
             <button
-                className="rounded-full bg-white p-5 text-4xl text-red-500 shadow-2xl"
+                className="rounded-full bg-white p-5 text-4xl text-red-500 shadow"
                 onClick={() => onSwipe('left')}
                 data-testid="swipe-left">
                 <FaThumbsDown />
             </button>
 
             <button
-                className="rounded-full bg-white p-5 text-4xl text-green-500 shadow-2xl"
+                className="rounded-full bg-white p-5 text-4xl text-green-500 shadow"
                 onClick={() => onSwipe('left')}
                 data-testid="swipe-right">
                 <FaThumbsUp />
