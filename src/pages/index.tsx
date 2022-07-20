@@ -1,22 +1,18 @@
 import type { NextPage } from 'next';
 
-import React from 'react';
-import { useSpotifyPlaylistRequest } from '../spotify-api';
-import { Swipe } from '../components/sections/swipe/Swipe';
+import React, { useContext } from 'react';
+import Login from 'components/Login';
+import { SpotifyApiContext } from 'pages/_app';
 
 const Home: NextPage = () => {
     //TODO: Change this to serversideprops
-    const {
-        status,
-        data: playlist,
-        error,
-        isFetching,
-    } = useSpotifyPlaylistRequest();
+    const token = useContext(SpotifyApiContext);
+    if (!token) return <Login />;
 
-    if (status != 'success') return <h1>Loading</h1>;
-    return (
+    return <h1>{token}</h1>;
+    /*return (
         <Swipe tracks={playlist.tracks.items.map(({ track }) => track)}></Swipe>
-    );
+    );*/
 };
 
 export default Home;
