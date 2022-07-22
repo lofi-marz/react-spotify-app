@@ -4,19 +4,18 @@ import {
     GetPlaylistResponse,
     StoredToken,
 } from './types';
-import {
-    getSpotifyApi,
-    getSpotifyToken,
-    getSpotifyTokenFromLogin,
-} from './api';
+import { getSpotifyApi, getSpotifyTokenFromLogin } from './api';
 import useLocalStorageSync from '../hooks/useLocalStorageSync';
 
-function useSpotifyToken() {
+/*function useSpotifyToken() {
     return useQuery(['token'], () => getSpotifyToken());
-}
+}*/
 
-function useSpotifyApiRequest<T>(params: object, apiPath: string) {
-    const { data: token } = useSpotifyToken();
+function useSpotifyApiRequest<T>(
+    params: object,
+    token: string | null,
+    apiPath: string
+) {
     return useQuery(
         ['spotify', params, apiPath],
         () => getSpotifyApi<T>(params, token as string, apiPath),
@@ -24,14 +23,18 @@ function useSpotifyApiRequest<T>(params: object, apiPath: string) {
     );
 }
 
-export function useSpotifyPlaylistRequest() {
+export function useSpotifyPlaylistRequest(token: string | null) {
     const TEST_PLAYLIST_URL = 'playlists/4dCrUKnLCNoAnbAz65uMDS';
     const query = {
         additional_types: 'track',
         market: 'GB',
     };
 
-    return useSpotifyApiRequest<GetPlaylistResponse>(query, TEST_PLAYLIST_URL);
+    return useSpotifyApiRequest<GetPlaylistResponse>(
+        query,
+        token,
+        TEST_PLAYLIST_URL
+    );
 }
 
 export function useGetSpotifyLoginToken(

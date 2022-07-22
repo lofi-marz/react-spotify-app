@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 
 import React, { useContext, useEffect } from 'react';
-import { SpotifyApiContext } from 'pages/_app';
+
 import { useRouter } from 'next/router';
 import {
     GetAuthorizeResponse,
@@ -11,6 +11,7 @@ import {
 } from '../spotify-api';
 import useLocalStorageSync from '../hooks/useLocalStorageSync';
 import { createStoredToken } from '../spotify-api/api';
+import { SpotifyApiContext } from '../spotify-api/SpotifyApiContext';
 
 const Login: NextPage = () => {
     //TODO: Change this to serversideprops

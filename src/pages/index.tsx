@@ -1,9 +1,27 @@
 import type { NextPage } from 'next';
 
 import React, { useContext, useEffect } from 'react';
-import { SpotifyApiContext } from 'pages/_app';
+
 import { useRouter } from 'next/router';
 import LoginGreeting from '../components/LoginGreeting';
+
+import { Swipe } from 'components/sections/swipe/Swipe';
+import { useSpotifyPlaylistRequest } from '../spotify-api';
+import { SpotifyApiContext } from '../spotify-api/SpotifyApiContext';
+
+function SwipeSection() {
+    //TODO: Change this to serversideprops
+    const token = useContext(SpotifyApiContext);
+    const { data: playlist, isSuccess } = useSpotifyPlaylistRequest(
+        token ? token.accessToken : null
+    );
+
+    if (!isSuccess) return <h1>Error</h1>;
+
+    return (
+        <Swipe tracks={playlist.tracks.items.map(({ track }) => track)}></Swipe>
+    );
+}
 
 const Home: NextPage = () => {
     //TODO: Change this to serversideprops
@@ -15,11 +33,7 @@ const Home: NextPage = () => {
         console.log('Reloading:', token);
     }, [token]);
 
-    return token ? (
-        <h1 className="w-screen">{JSON.stringify(token)}</h1>
-    ) : (
-        <LoginGreeting />
-    );
+    return token ? <SwipeSection /> : <LoginGreeting />;
     /*return (
         <Swipe tracks={playlist.tracks.items.map(({ track }) => track)}></Swipe>
     );*/
