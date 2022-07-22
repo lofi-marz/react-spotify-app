@@ -3,21 +3,22 @@ import type { NextPage } from 'next';
 import React, { useContext, useEffect } from 'react';
 
 import { useRouter } from 'next/router';
-import LoginGreeting from '../components/LoginGreeting';
+import LoginGreeting from 'components/LoginGreeting';
 
 import { Swipe } from 'components/sections/swipe/Swipe';
-import { useSpotifyPlaylistRequest } from '../spotify-api';
-import { SpotifyApiContext } from '../spotify-api/SpotifyApiContext';
+import { SpotifyApiContext, useSpotifyPlaylistRequest } from 'spotify-api';
 
 function SwipeSection() {
     //TODO: Change this to serversideprops
     const token = useContext(SpotifyApiContext);
-    const { data: playlist, isSuccess } = useSpotifyPlaylistRequest(
-        token ? token.accessToken : null
-    );
+    const {
+        data: playlist,
+        isSuccess,
+        status,
+    } = useSpotifyPlaylistRequest(token ? token.accessToken : null);
 
-    if (!isSuccess) return <h1>Error</h1>;
-
+    if (status === 'error') return <h1>Error</h1>;
+    if (status === 'loading') return <h1>Loading</h1>;
     return (
         <Swipe tracks={playlist.tracks.items.map(({ track }) => track)}></Swipe>
     );

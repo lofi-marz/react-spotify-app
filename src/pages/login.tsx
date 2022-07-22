@@ -5,13 +5,31 @@ import React, { useContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import {
     GetAuthorizeResponse,
+    SpotifyApiContext,
     useGetSpotifyLoginToken,
     useLocalSpotifyState,
     useLocalToken,
-} from '../spotify-api';
+} from 'spotify-api';
 import useLocalStorageSync from '../hooks/useLocalStorageSync';
-import { createStoredToken } from '../spotify-api/api';
-import { SpotifyApiContext } from '../spotify-api/SpotifyApiContext';
+import { createStoredToken } from 'spotify-api/api';
+
+function LoginSuccessMessage() {
+    return <header className="">Login Successful!</header>;
+}
+
+function LoginFailureMessage() {
+    const router = useRouter();
+    return (
+        <header className="flex flex-col items-center justify-center gap-5">
+            Login failed
+            <button
+                className="rounded-full bg-white px-10 py-5 text-primary shadow"
+                onClick={() => router.push('/')}>
+                Try again?
+            </button>
+        </header>
+    );
+}
 
 const Login: NextPage = () => {
     //TODO: Change this to serversideprops
@@ -39,7 +57,7 @@ const Login: NextPage = () => {
     useEffect(() => {
         console.log('Stored token:', storedToken);
         if (storedToken) {
-            router.push('/');
+            //router.push('/');
         }
     }, []);
 
@@ -55,11 +73,16 @@ const Login: NextPage = () => {
             console.log('Response token:', data);
 
             setStoredToken(createStoredToken(data));
-            router.push('/');
+            //router.push('/');
         }
     }, [isSuccess]);
 
-    return <h1>{JSON.stringify(storedToken)}</h1>;
+    return (
+        <div className="flex h-screen w-full items-center justify-center bg-primary text-center font-title text-5xl text-white">
+            {isSuccess ? <LoginSuccessMessage /> : <LoginFailureMessage />}
+        </div>
+    );
+
     /*return (
         <Swipe tracks={playlist.tracks.items.map(({ track }) => track)}></Swipe>
     );*/

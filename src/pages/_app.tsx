@@ -1,11 +1,10 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
-import { Layout } from '../components/Layout';
+import { Layout } from 'components/Layout';
 import { QueryClient } from '@tanstack/query-core';
 import { QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
-import { useLocalToken } from 'spotify-api';
-import { SpotifyApiContext } from 'spotify-api/SpotifyApiContext';
+import { SpotifyApiContextProvider, useLocalToken } from 'spotify-api';
 
 const queryClient = new QueryClient();
 
@@ -17,11 +16,11 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
     return (
         <QueryClientProvider client={queryClient}>
-            <SpotifyApiContext.Provider value={token}>
+            <SpotifyApiContextProvider token={token}>
                 <Layout>
                     <Component {...pageProps} />
                 </Layout>
-            </SpotifyApiContext.Provider>
+            </SpotifyApiContextProvider>
         </QueryClientProvider>
     );
 }
