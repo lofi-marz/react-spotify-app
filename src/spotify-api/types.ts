@@ -29,6 +29,12 @@ export type GetPlaylistResponse = {
     tracks: { items: PlaylistTrack[] };
 };
 
+export type GetAuthorizeResponse = {
+    code?: string;
+    state: string;
+    error?: string;
+};
+
 const test = {
     album: {
         album_type: 'album',
@@ -108,4 +114,20 @@ const test = {
     track_number: 10,
     type: 'track',
     uri: 'spotify:track:2OQfyddAKv4FyelDJjGNHH',
+};
+
+export type PostTokenResponse = {
+    access_token: string;
+    token_type: string;
+    scope: string;
+    expires_in: number;
+    refresh_token: string;
+};
+
+export type StoredToken = {
+    accessToken: string;
+    tokenType: string;
+    scope: string;
+    expiryDate: Date;
+    refreshToken: string;
 };

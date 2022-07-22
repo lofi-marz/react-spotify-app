@@ -1,6 +1,6 @@
-import SpotifyApiContext } from 'pages';
+import { SpotifyApiContext } from 'pages/_app';
 
-function SpotifyApiContextProvider({ token }: { token: string }) {
+function SpotifyApiContextProvider() {
     return (
         <SpotifyApiContext.Provider value={token}></SpotifyApiContext.Provider>
     );

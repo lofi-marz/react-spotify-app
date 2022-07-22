@@ -14,7 +14,7 @@ export function Layout({ children }: LayoutProps) {
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
 
-                <main className="flex min-h-screen w-screen grow flex-col overflow-clip bg-gradient-to-t from-zinc-50 to-white text-zinc-900 dark:bg-zinc-900">
+                <main className="flex min-h-screen w-screen grow flex-col items-center justify-center overflow-clip bg-gradient-to-t from-zinc-50 to-white text-zinc-900 dark:bg-zinc-900">
                     {children}
                 </main>
             </div>
