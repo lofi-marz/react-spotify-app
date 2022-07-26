@@ -6,18 +6,14 @@ type LayoutProps = WithChildrenProps;
 
 export function Layout({ children }: LayoutProps) {
     return (
-        <div className="h-full min-h-screen w-screen">
-            <div className="flex flex-col items-center justify-center">
-                <Head>
-                    <title>hi</title>
-                    <meta name="description" content="" />
-                    <link rel="icon" href="/favicon.ico" />
-                </Head>
+        <main className="flex flex h-screen w-screen grow flex-col flex-col items-center items-center justify-center justify-center overflow-clip bg-gradient-to-t from-zinc-50 to-white text-zinc-900 dark:bg-zinc-900">
+            <Head>
+                <title>hi</title>
+                <meta name="description" content="" />
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
 
-                <main className="flex min-h-screen w-screen grow flex-col items-center justify-center overflow-clip bg-gradient-to-t from-zinc-50 to-white text-zinc-900 dark:bg-zinc-900">
-                    {children}
-                </main>
-            </div>
-        </div>
+            {children}
+        </main>
     );
 }

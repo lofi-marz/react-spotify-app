@@ -19,7 +19,7 @@ module.exports = {
             },
             colors: {
                 primary: colors.red[500],
-                secondary: colors.orange[500],
+                secondary: colors.pink[500],
             },
         },
     },

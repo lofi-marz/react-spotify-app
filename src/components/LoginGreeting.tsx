@@ -70,7 +70,6 @@ export function LoginGreeting() {
         })();
     }, [storedCodeVerifier]);
 
-    console.log(state);
     const params = {
         client_id: spotify.clientId,
         response_type: 'code',
@@ -79,29 +78,37 @@ export function LoginGreeting() {
         code_challenge_method: 'S256',
         code_challenge: codeChallenge,
     };
-
+    //TODO: Maybe replace the placeholder divs with css
     return (
-        <div className="flex h-screen w-full flex-col items-center justify-center font-title text-white">
-            <header className="flex h-2/5 w-full flex-col items-center justify-center gap-5 rounded-br-[100px] bg-primary">
-                <div className="flex flex-row items-center justify-center gap-5">
-                    <div className="flex items-center justify-center rounded-full bg-white p-5 text-3xl text-primary">
-                        <FaMusic />
+        <div className="relative flex h-screen  w-full items-center justify-center bg-primary">
+            <div className="-z-5 absolute flex h-full w-full flex-row">
+                <div className="h-full w-full "></div>
+                <div className="h-full w-full grow bg-white"></div>
+            </div>
+            <div className="flex  h-screen  w-full  max-w-lg flex-col items-center justify-center font-title text-white">
+                <header className="z-10 flex h-1/2 w-full flex-col items-center justify-center gap-5 rounded-br-[100px] bg-primary bg-white lg:rounded-r-full">
+                    <div className="flex flex-row items-center justify-center gap-5 ">
+                        <div className="flex items-center justify-center rounded-full bg-white p-5 text-3xl text-primary">
+                            <FaMusic />
+                        </div>
+                        <h1 className="text-5xl">Swipeify</h1>
                     </div>
-                    <h1 className="text-5xl">Swipeify</h1>
-                </div>
-                <h2 className="text-xl opacity-90">Make finding music fun.</h2>
-            </header>
-            <div className="relative flex w-full grow items-center justify-center">
-                <div className="absolute h-full w-full bg-primary"></div>
-                <div className="z-10 flex h-full w-full items-center justify-center rounded-tl-[100px] bg-white text-3xl">
-                    <a
-                        href={
-                            'https://accounts.spotify.com/authorize?' +
-                            qs.stringify(params)
-                        }
-                        className="card rounded-full bg-primary px-10 py-5 text-white shadow">
-                        Get Started
-                    </a>
+                    <h2 className="text-xl opacity-90">
+                        Make finding music fun.
+                    </h2>
+                </header>
+                <div className="relative flex w-full grow items-center justify-center">
+                    <div className="absolute h-full w-full"></div>
+                    <div className="z-10 flex h-full w-full items-center justify-center rounded-tl-[100px] bg-white text-3xl lg:rounded-l-full">
+                        <a
+                            href={
+                                'https://accounts.spotify.com/authorize?' +
+                                qs.stringify(params)
+                            }
+                            className="card rounded-full bg-primary px-10 py-5 text-white shadow">
+                            Get Started
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

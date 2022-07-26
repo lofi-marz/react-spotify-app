@@ -68,8 +68,9 @@ function ScrollingBackground({ track }: { track: Track }) {
 }
 
 type SwipeProps = {
-    tracks: Track[];
+    tracks?: Track[];
 };
+
 export function Swipe({ tracks }: SwipeProps) {
     const [current, setCurrent] = useState(0);
 
@@ -89,11 +90,11 @@ export function Swipe({ tracks }: SwipeProps) {
         });
     };
 
-    return tracks.length ? (
-        <div className="flex h-screen flex-col items-center justify-center">
+    return (
+        <div className="flex h-screen w-screen flex-col items-center justify-center">
             <SwipeCardStack
                 onSwipe={onSwipe}
-                songs={tracks.slice(current, current + 5)}
+                songs={tracks?.slice(current, current + 5)}
                 current={current}
             />
 
@@ -101,12 +102,12 @@ export function Swipe({ tracks }: SwipeProps) {
                 <h1
                     className="w-full overflow-clip text-2xl font-bold"
                     data-testid="track-name">
-                    {tracks[current].name}
+                    {tracks?.[current].name}
                 </h1>
                 <h2
                     className="text-gradient w-full w-64 truncate text-xl"
                     data-testid="track-artist-name">
-                    {tracks[current].artists[0].name}
+                    {tracks?.[current].artists[0].name}
                 </h2>
             </div>
 
@@ -114,7 +115,5 @@ export function Swipe({ tracks }: SwipeProps) {
             <SwipeControls onSwipe={onSwipe} />
             <TrackControls />
         </div>
-    ) : (
-        <h1></h1>
     );
 }

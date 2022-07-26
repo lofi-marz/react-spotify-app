@@ -8,10 +8,10 @@ import {
 } from 'framer-motion';
 import { SwipeDirection } from './types';
 import { AlbumImage, Track } from 'spotify-api';
-import { FaHeart, FaTrash } from 'react-icons/fa';
+import { FaHeart, FaMusic, FaTrash } from 'react-icons/fa';
 
 export type SwipeCardStackProps = {
-    songs: Track[];
+    songs?: Track[];
     onSwipe: (direction: SwipeDirection) => void;
     current: number;
 };
@@ -39,12 +39,47 @@ function SwipeCardOverlay({
                 <FaHeart />
             </motion.div>
             <motion.div
-                className="card absolute top-0 left-0 flex aspect-square h-full w-full   items-center justify-center bg-red-500 text-white opacity-50"
+                className="card absolute top-0 left-0 flex aspect-square h-full w-full items-center justify-center   bg-red-500 text-white opacity-50"
                 style={{ opacity: leftOpacity }}
                 key="left-swipe-overlay">
                 <FaTrash />
             </motion.div>
         </>
+    );
+}
+
+function LoadingCard() {
+    return (
+        <motion.div
+            key="loading-card"
+            className="card absolute flex aspect-square w-72 items-center justify-center bg-gradient-to-br from-primary to-secondary font-title text-5xl  shadow"
+            layout
+            animate={{
+                rotate: [0, 180, 360, 0],
+                borderRadius: ['0.5rem', '50%', '50%', '0.5rem'],
+            }}
+            transition={{
+                duration: 2,
+                ease: 'easeInOut',
+                times: [0, 0.25, 0.5, 1],
+                repeat: Infinity,
+                repeatDelay: 1,
+            }}>
+            <motion.div
+                className="absolute rounded-full bg-white p-10 "
+                layout
+                animate={{
+                    scale: [0, 1, 1, 0],
+                }}
+                transition={{
+                    duration: 2,
+                    ease: 'easeInOut',
+                    times: [0, 0.25, 0.5, 1],
+                    repeat: Infinity,
+                    repeatDelay: 1,
+                }}></motion.div>
+            <FaMusic className="text-white" />
+        </motion.div>
     );
 }
 
@@ -106,21 +141,25 @@ export function SwipeCardStack({
     current,
 }: SwipeCardStackProps) {
     const containerRef = useRef(null);
-    const reversedSongs = [...songs];
+
     return (
         <div
-            className="flex aspect-square w-72 flex-col items-center justify-center"
+            className="flex aspect-square w-full flex-col items-center justify-center overflow-clip"
             ref={containerRef}>
             <AnimatePresence>
-                {reversedSongs.map((s, i) => (
-                    <SwipeCard
-                        img={s.album.images[0]}
-                        onSwipe={onSwipe}
-                        index={i}
-                        key={`${s.name}-stack`}
-                        containerRef={containerRef}
-                    />
-                ))}
+                {songs ? (
+                    songs.map((s, i) => (
+                        <SwipeCard
+                            img={s.album.images[0]}
+                            onSwipe={onSwipe}
+                            index={i}
+                            key={`${s.name}-stack`}
+                            containerRef={containerRef}
+                        />
+                    ))
+                ) : (
+                    <LoadingCard />
+                )}
             </AnimatePresence>
         </div>
     );

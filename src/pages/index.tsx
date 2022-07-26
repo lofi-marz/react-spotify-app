@@ -18,10 +18,8 @@ function SwipeSection() {
     } = useSpotifyPlaylistRequest(token ? token.accessToken : null);
 
     if (status === 'error') return <h1>Error</h1>;
-    if (status === 'loading') return <h1>Loading</h1>;
-    return (
-        <Swipe tracks={playlist.tracks.items.map(({ track }) => track)}></Swipe>
-    );
+    const tracks = playlist?.tracks.items.map(({ track }) => track);
+    return <Swipe tracks={tracks}></Swipe>;
 }
 
 const Home: NextPage = () => {
