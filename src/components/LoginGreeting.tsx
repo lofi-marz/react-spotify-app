@@ -4,6 +4,7 @@ import qs from 'qs';
 import { useLocalSpotifyState } from '../spotify-api';
 import useLocalStorageSync from '../hooks/useLocalStorageSync';
 import { FaMusic } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 
 function getRandomChars(minLength: number, maxLength = -1) {
     let chars = '';
@@ -80,7 +81,11 @@ export function LoginGreeting() {
     };
     //TODO: Maybe replace the placeholder divs with css
     return (
-        <div className="relative flex h-screen  w-full items-center justify-center bg-primary">
+        <motion.div
+            className="relative flex h-screen  w-full items-center justify-center bg-primary"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}>
             <div className="-z-5 absolute flex h-full w-full flex-row">
                 <div className="h-full w-full "></div>
                 <div className="h-full w-full grow bg-white"></div>
@@ -111,7 +116,7 @@ export function LoginGreeting() {
                     </div>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 }
 

@@ -3,7 +3,7 @@ const nextConfig = {
     reactStrictMode: true,
     distDir: 'dist',
     images: {
-        domains: ['i.scdn.co'],
+        domains: ['i.scdn.co', 'cataas.com'],
     },
 };
 

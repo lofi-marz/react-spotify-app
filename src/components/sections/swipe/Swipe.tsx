@@ -91,7 +91,11 @@ export function Swipe({ tracks }: SwipeProps) {
     };
 
     return (
-        <div className="flex h-screen w-screen flex-col items-center justify-center">
+        <motion.div
+            className="flex h-screen w-screen flex-col items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}>
             <SwipeCardStack
                 onSwipe={onSwipe}
                 songs={tracks?.slice(current, current + 5)}
@@ -114,6 +118,6 @@ export function Swipe({ tracks }: SwipeProps) {
             <TrackProgressBar />
             <SwipeControls onSwipe={onSwipe} />
             <TrackControls />
-        </div>
+        </motion.div>
     );
 }

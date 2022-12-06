@@ -4,7 +4,11 @@ import {
     GetPlaylistResponse,
     StoredToken,
 } from './types';
-import { getSpotifyApi, getSpotifyTokenFromLogin } from './api';
+import {
+    getSpotifyApi,
+    getSpotifyTokenFromLogin,
+    postRefreshToken,
+} from './api';
 import useLocalStorageSync from '../hooks/useLocalStorageSync';
 
 /*function useSpotifyToken() {
@@ -59,6 +63,40 @@ export function useGetSpotifyLoginToken(
             ),
         }
     );
+}
+
+export function useRefreshTokenQuery(
+    tokenExpired: boolean,
+    refreshToken: string
+) {
+    return useQuery(
+        ['spotify', refreshToken],
+        () => postRefreshToken(refreshToken),
+        {
+            enabled: tokenExpired,
+        }
+    );
+}
+
+export function useSpotifyToken() {
+    const [localToken] = useLocalToken();
+    const { data } = useRefreshTokenQuery(
+        Boolean(
+            localToken &&
+                localToken.expiryDate.getUTCMilliseconds() > Date.now()
+        ),
+        localToken ? localToken.refreshToken : ''
+    );
+    if (localToken && localToken.expiryDate.getUTCMilliseconds() < Date.now()) {
+        return localToken;
+    } else if (
+        localToken &&
+        localToken.expiryDate.getUTCMilliseconds() < Date.now()
+    ) {
+        return;
+    }
+
+    return null;
 }
 
 export function useLocalToken() {

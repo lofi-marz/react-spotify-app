@@ -9,7 +9,8 @@ import { SpotifyApiContextProvider, useLocalToken } from 'spotify-api';
 const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
-    const [token, setToken] = useLocalToken();
+    const [token, setToken, deleteToken] = useLocalToken();
+
     if (token && token.expiryDate < new Date()) {
         //TODO: Refresh token
         console.log('Refresh token!');

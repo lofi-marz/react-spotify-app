@@ -15,5 +15,11 @@ export default function useLocalStorageSync<T>(key: string, fallback: T) {
         localStorage.setItem(key, JSON.stringify(value));
     }, [value]);
 
-    return [value, setValue] as const;
+    return [
+        value,
+        setValue,
+        () => {
+            localStorage.removeItem(key);
+        },
+    ] as const;
 }
